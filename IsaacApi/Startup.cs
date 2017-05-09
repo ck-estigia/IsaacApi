@@ -6,12 +6,11 @@ using Microsoft.Extensions.Logging;
 using IsaacApi.Helpers;
 using IsaacApi.Model.Entities;
 using MySQL.Data.Entity.Extensions;
-using IsaacApi.Model.DAO;
 using IsaacApi.Model.Services.Facades;
 
 namespace IsaacApi
 {
-    public class Startup
+    public partial class Startup
     {
         public Startup(IHostingEnvironment env)
         {
@@ -48,6 +47,8 @@ namespace IsaacApi
         {
             loggerFactory.AddConsole(LogLevel.Trace);
             loggerFactory.AddDebug();
+
+            ConfigureAuth(app);
 
             app.UseMvc();
         }
