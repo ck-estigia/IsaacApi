@@ -1,0 +1,5 @@
+﻿{
+  "DataAccessMySqlProvider": {
+    "ConnectionString": "Server=192.168.108.133;Port=3306;Database=isaac_db;Uid=remote_sa;Pwd=kmikc"
+  }
+}
