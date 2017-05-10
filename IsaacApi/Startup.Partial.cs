@@ -1,8 +1,11 @@
 ﻿using IsaacApi.Providers;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
@@ -47,7 +50,7 @@ namespace IsaacApi
                 ValidateIssuer = true,
                 ValidIssuer = Configuration.GetSection("TokenAuthentication:Issuer").Value,
                 ValidateAudience = true,
-                ValidAudience = Configuration.GetSection("TokenAuthentication:DemoAudience").Value,
+                ValidAudience = Configuration.GetSection("TokenAuthentication:Audience").Value,
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
@@ -58,14 +61,31 @@ namespace IsaacApi
             {
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
-                TokenValidationParameters = tokenValidationParameters
+                TokenValidationParameters = tokenValidationParameters,
+                Events = new JwtBearerEvents()
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        return Task.CompletedTask;
+                    }
+                }
             });
 
-            app.UseCookieAuthentication(new CookieAuthenticationOptions {
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
                 CookieName = Configuration.GetSection("TokenAuthentication:CookieName").Value,
-                TicketDataFormat = new TokenAuthProvider(SecurityAlgorithms.HmacSha256, tokenValidationParameters)
+                TicketDataFormat = new TokenAuthProvider(SecurityAlgorithms.HmacSha256, tokenValidationParameters),
+                Events = new CookieAuthenticationEvents
+                {
+                    OnRedirectToLogin = context =>
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        return Task.CompletedTask;
+                    }
+                }
             });
         }
     }

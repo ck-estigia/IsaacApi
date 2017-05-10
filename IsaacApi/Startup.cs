@@ -39,7 +39,7 @@ namespace IsaacApi
                 opt.AutomaticAuthentication = true;
                 opt.ForwardClientCertificate = true;
                 opt.ForwardWindowsAuthentication = false;
-            });
+            });            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
