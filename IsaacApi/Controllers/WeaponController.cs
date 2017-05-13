@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace IsaacApi.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     public class WeaponController : BaseController
     {
